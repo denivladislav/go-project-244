@@ -1,0 +1,30 @@
+version: "2"
+linters:
+  enable:
+    - govet
+    - staticcheck
+    - errcheck
+    - ineffassign
+    - unused
+    - misspell
+    - bodyclose
+    - contextcheck
+    - containedctx
+    - noctx
+    - nilerr
+    - nilnesserr
+    - errchkjson
+    - exhaustive
+    - nolintlint
+    - cyclop
+    - unparam
+    - goconst
+    - wsl_v5
+formatters:
+  enable:
+    - goimports
+    - golines
+  settings:
+    goimports:
+      local-prefixes:
+        - code

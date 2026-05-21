@@ -10,23 +10,37 @@ import (
 	"github.com/urfave/cli/v3"
 )
 
-var ErrRequiredPath = errors.New("path is required")
+var formats = []string{"stylish"}
+
+var formatFlag = &cli.StringFlag{
+	Name:    "format",
+	Value:   formats[0],
+	Usage:   "output format",
+	Aliases: []string{"f"},
+}
+
+var cmdFlags = []cli.Flag{
+	formatFlag,
+}
+
+var ErrMissingPaths = errors.New("two paths are required")
 
 func main() {
 	cmd := &cli.Command{
 		Name:  "gendiff",
 		Usage: "Compares two configuration files and shows the difference",
-		// Flags: cmdFlags,
+		Flags: cmdFlags,
 		Action: func(ctx context.Context, cmd *cli.Command) error {
-			path := cmd.Args().Get(0)
+			pathA := cmd.Args().Get(0)
+			pathB := cmd.Args().Get(1)
 
-			if path == "" {
-				return ErrRequiredPath
+			if pathA == "" || pathB == "" {
+				return ErrMissingPaths
 			}
 
 			res := "hello, world"
 
-			fmt.Printf("%s", res)
+			fmt.Printf("%s\n", res)
 
 			return nil
 		},

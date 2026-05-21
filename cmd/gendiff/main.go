@@ -8,6 +8,8 @@ import (
 	"os"
 
 	"github.com/urfave/cli/v3"
+
+	gendiff "code"
 )
 
 var formats = []string{"stylish"}
@@ -38,9 +40,16 @@ func main() {
 				return ErrMissingPaths
 			}
 
-			res := "hello, world"
+			diff, err := gendiff.GenDiff(
+				pathA,
+				pathB,
+				cmd.String(formatFlag.Name),
+			)
+			if err != nil {
+				return fmt.Errorf("gen diff failed: %w", err)
+			}
 
-			fmt.Printf("%s\n", res)
+			fmt.Printf("%s\n", diff)
 
 			return nil
 		},

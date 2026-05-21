@@ -1,0 +1,36 @@
+package code
+
+import (
+	"fmt"
+	"os"
+	"path/filepath"
+
+	"code/internal/parse"
+)
+
+func GenDiff(pathA, pathB string, format string) (string, error) {
+	bytesA, err := os.ReadFile(pathA)
+	if err != nil {
+		return "", fmt.Errorf("read file failed: %w", err)
+	}
+
+	bytesB, err := os.ReadFile(pathB)
+	if err != nil {
+		return "", fmt.Errorf("read file failed: %w", err)
+	}
+
+	extA := filepath.Ext(pathA)
+	extB := filepath.Ext(pathB)
+
+	parsedA, err := parse.ParseContent(bytesA, extA)
+	if err != nil {
+		return "", fmt.Errorf("parse content failed: %w", err)
+	}
+
+	parsedB, err := parse.ParseContent(bytesB, extB)
+	if err != nil {
+		return "", fmt.Errorf("parse content failed: %w", err)
+	}
+
+	return fmt.Sprintf("%s\n%s\n", parsedA, parsedB), nil
+}

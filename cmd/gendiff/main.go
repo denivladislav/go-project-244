@@ -25,7 +25,7 @@ var cmdFlags = []cli.Flag{
 	formatFlag,
 }
 
-var ErrMissingPaths = errors.New("two paths are required")
+var ErrMissingPath = errors.New("two paths are required")
 
 func main() {
 	cmd := &cli.Command{
@@ -37,7 +37,7 @@ func main() {
 			pathB := cmd.Args().Get(1)
 
 			if pathA == "" || pathB == "" {
-				return ErrMissingPaths
+				return ErrMissingPath
 			}
 
 			diff, err := gendiff.GenDiff(

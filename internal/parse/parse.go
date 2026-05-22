@@ -35,7 +35,7 @@ func parse(data []byte, ext string) (map[string]any, error) {
 	}
 }
 
-func ParseContent(content []byte, ext string) (map[string]any, error) {
+func FileContent(content []byte, ext string) (map[string]any, error) {
 	parsed, err := parse(content, ext)
 	if err != nil {
 		return nil, fmt.Errorf("parse failed: %w", err)

@@ -33,7 +33,7 @@ func GenDiff(pathA, pathB string, format string) (string, error) {
 		return "", fmt.Errorf("parse content failed: %w", err)
 	}
 
-	newAst := ast.New(parsedA, parsedB)
+	newAst := ast.Build(parsedA, parsedB)
 
 	return ast.Prettify(newAst)
 }

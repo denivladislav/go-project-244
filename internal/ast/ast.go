@@ -30,7 +30,9 @@ type Node struct {
 	// children  []Node
 }
 
-func New(objA, objB map[string]any) []Node {
+type Ast = []Node
+
+func Build(objA, objB map[string]any) Ast {
 	set := make(map[string]struct{}, len(objA)+len(objB))
 
 	for key := range objA {
@@ -79,7 +81,7 @@ func (e UnknownGroupError) Error() string {
 	return fmt.Sprintf(`unknown node group: "%s"`, e.group)
 }
 
-func Prettify(ast []Node) (string, error) {
+func Prettify(ast Ast) (string, error) {
 	var b strings.Builder
 	b.WriteString("{\n")
 

@@ -5,6 +5,7 @@ import (
 	"os"
 	"path/filepath"
 
+	"code/internal/ast"
 	"code/internal/parse"
 )
 
@@ -22,15 +23,17 @@ func GenDiff(pathA, pathB string, format string) (string, error) {
 	extA := filepath.Ext(pathA)
 	extB := filepath.Ext(pathB)
 
-	parsedA, err := parse.ParseContent(bytesA, extA)
+	parsedA, err := parse.FileContent(bytesA, extA)
 	if err != nil {
 		return "", fmt.Errorf("parse content failed: %w", err)
 	}
 
-	parsedB, err := parse.ParseContent(bytesB, extB)
+	parsedB, err := parse.FileContent(bytesB, extB)
 	if err != nil {
 		return "", fmt.Errorf("parse content failed: %w", err)
 	}
 
-	return fmt.Sprintf("%s\n%s\n", parsedA, parsedB), nil
+	newAst := ast.New(parsedA, parsedB)
+
+	return ast.Prettify(newAst)
 }

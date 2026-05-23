@@ -28,14 +28,18 @@ jobs:
         with:
           version: v2.11.2
           args: --config=.golangci.yml
-  test:
-    name: test
+  test-coverage:
+    name: test and add coverage
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
       - uses: actions/setup-go@v6
         with:
           go-version-file: go.mod
-      - name: test
+      - name: test and add coverage
         run: |
-          make test
+          make test-coverage
+      - name: SonarQube Scan
+        uses: SonarSource/sonarqube-scan-action@v8.1.0
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}

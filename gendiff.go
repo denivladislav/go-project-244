@@ -6,10 +6,11 @@ import (
 	"path/filepath"
 
 	"code/internal/ast"
+	"code/internal/format"
 	"code/internal/parse"
 )
 
-func GenDiff(pathA, pathB string, format string) (string, error) {
+func GenDiff(pathA, pathB, formatName string) (string, error) {
 	bytesA, err := os.ReadFile(pathA)
 	if err != nil {
 		return "", fmt.Errorf("read file failed: %w", err)
@@ -35,5 +36,5 @@ func GenDiff(pathA, pathB string, format string) (string, error) {
 
 	newAst := ast.Build(parsedA, parsedB)
 
-	return ast.Prettify(newAst)
+	return format.Prettify(newAst, formatName)
 }

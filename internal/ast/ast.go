@@ -1,10 +1,8 @@
 package ast
 
 import (
-	"fmt"
 	"maps"
 	"slices"
-	"strings"
 )
 
 type Group struct {
@@ -23,10 +21,10 @@ var (
 )
 
 type Node struct {
-	key       string
-	prevValue any
-	value     any
-	group     Group
+	Key       string
+	PrevValue any
+	Value     any
+	Group     Group
 	// children  []Node
 }
 
@@ -50,74 +48,25 @@ func Build(objA, objB map[string]any) Ast {
 
 	for _, key := range sortedKeys {
 		if _, ok := objA[key]; !ok {
-			nodes = append(nodes, Node{key: key, value: objB[key], group: Added})
+			nodes = append(nodes, Node{Key: key, Value: objB[key], Group: Added})
 			continue
 		}
 
 		if _, ok := objB[key]; !ok {
-			nodes = append(nodes, Node{key: key, value: objA[key], group: Deleted})
+			nodes = append(nodes, Node{Key: key, Value: objA[key], Group: Deleted})
 			continue
 		}
 
 		if objA[key] == objB[key] {
-			nodes = append(nodes, Node{key: key, value: objA[key], group: Unmodified})
+			nodes = append(nodes, Node{Key: key, Value: objA[key], Group: Unmodified})
 			continue
 		}
 
 		nodes = append(
 			nodes,
-			Node{key: key, prevValue: objA[key], value: objB[key], group: Modified},
+			Node{Key: key, PrevValue: objA[key], Value: objB[key], Group: Modified},
 		)
 	}
 
 	return nodes
-}
-
-type UnknownGroupError struct {
-	group string
-}
-
-func (e UnknownGroupError) Error() string {
-	return fmt.Sprintf(`unknown node group: "%s"`, e.group)
-}
-
-func Prettify(ast Ast) (string, error) {
-	var b strings.Builder
-	b.WriteString("{\n")
-
-	for _, node := range ast {
-		switch node.group {
-		case Deleted:
-			newLine := fmt.Sprintf("  - %s: %v\n", node.key, node.value)
-			b.WriteString(newLine)
-
-			continue
-		case Added:
-			newLine := fmt.Sprintf("  + %s: %v\n", node.key, node.value)
-			b.WriteString(newLine)
-
-			continue
-		case Unmodified:
-			newLine := fmt.Sprintf("    %s: %v\n", node.key, node.value)
-			b.WriteString(newLine)
-
-			continue
-		case Modified:
-			prevValueLine := fmt.Sprintf("  - %s: %v\n", node.key, node.prevValue)
-			b.WriteString(prevValueLine)
-
-			newValueLine := fmt.Sprintf("  + %s: %v\n", node.key, node.value)
-			b.WriteString(newValueLine)
-
-			continue
-		default:
-			return "", UnknownGroupError{group: node.group.String()}
-		}
-	}
-
-	b.WriteString("}")
-
-	str := b.String()
-
-	return str, nil
 }

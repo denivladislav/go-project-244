@@ -39,7 +39,7 @@ type Node struct {
 
 type Ast = []Node
 
-func Build(objA, objB map[string]any) Ast {
+func BuildAst(objA, objB map[string]any) Ast {
 	set := make(map[string]struct{}, len(objA)+len(objB))
 
 	for key := range objA {

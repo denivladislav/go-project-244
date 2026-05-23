@@ -7,6 +7,13 @@ import (
 	"code/internal/ast"
 )
 
+type Options struct {
+	leftIndent string
+	marker     string
+	key        string
+	value      any
+}
+
 func makeLine(options Options) string {
 	return fmt.Sprintf(
 		"%s%s %s: %v\n",
@@ -64,7 +71,7 @@ func MakeStylish(nodes ast.Ast) (string, error) {
 
 			continue
 		default:
-			return "", UnknownGroupError{group: node.Group.String()}
+			return "", ast.UnknownGroupError{Group: node.Group.String()}
 		}
 	}
 

@@ -6,19 +6,10 @@ import (
 	"code/internal/ast"
 )
 
-type UnknownGroupError struct {
-	group string
-}
+var DefaultFormat = "stylish"
 
-func (e UnknownGroupError) Error() string {
-	return fmt.Sprintf(`unknown node group: "%s"`, e.group)
-}
-
-type Options struct {
-	leftIndent string
-	marker     string
-	key        string
-	value      any
+var formatDict = map[string]func(ast.Ast) (string, error){
+	"stylish": MakeStylish,
 }
 
 type UnsupportedFormatError struct {
@@ -29,21 +20,26 @@ func (e UnsupportedFormatError) Error() string {
 	return fmt.Sprintf(`unsupported format: "%s"`, e.format)
 }
 
-func prettify(nodes ast.Ast, format string) (string, error) {
-	switch format {
-	case "stylish":
-		return MakeStylish(nodes)
-	default:
-		err := UnsupportedFormatError{format: format}
-		return "", err
+func getFormatFn(format string) (func(ast.Ast) (string, error), error) {
+	formatFn, ok := formatDict[format]
+	if !ok {
+		err := UnsupportedFormatError{format}
+		return nil, err
 	}
+
+	return formatFn, nil
 }
 
-func Prettify(nodes ast.Ast, format string) (string, error) {
-	prettified, err := prettify(nodes, format)
+func FormatAst(nodes ast.Ast, format string) (string, error) {
+	formatFn, err := getFormatFn(format)
 	if err != nil {
-		return "", fmt.Errorf("prettify failed: %w", err)
+		return "", fmt.Errorf("get format fn failed: %w", err)
 	}
 
-	return prettified, nil
+	formattedStr, err := formatFn(nodes)
+	if err != nil {
+		return "", fmt.Errorf("format fn failed: %w", err)
+	}
+
+	return formattedStr, nil
 }

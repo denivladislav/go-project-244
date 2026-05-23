@@ -24,17 +24,17 @@ func GenDiff(pathA, pathB, formatName string) (string, error) {
 	extA := filepath.Ext(pathA)
 	extB := filepath.Ext(pathB)
 
-	parsedA, err := parse.FileContent(bytesA, extA)
+	parsedA, err := parse.ParseContent(bytesA, extA)
 	if err != nil {
 		return "", fmt.Errorf("parse content failed: %w", err)
 	}
 
-	parsedB, err := parse.FileContent(bytesB, extB)
+	parsedB, err := parse.ParseContent(bytesB, extB)
 	if err != nil {
 		return "", fmt.Errorf("parse content failed: %w", err)
 	}
 
 	newAst := ast.Build(parsedA, parsedB)
 
-	return format.Prettify(newAst, formatName)
+	return format.FormatAst(newAst, formatName)
 }

@@ -10,13 +10,12 @@ import (
 	"github.com/urfave/cli/v3"
 
 	gendiff "code"
+	"code/internal/format"
 )
-
-var formats = []string{"stylish"}
 
 var formatFlag = &cli.StringFlag{
 	Name:    "format",
-	Value:   formats[0],
+	Value:   format.DefaultFormat,
 	Usage:   "output format",
 	Aliases: []string{"f"},
 }
@@ -49,7 +48,7 @@ func main() {
 				return fmt.Errorf("gen diff failed: %w", err)
 			}
 
-			fmt.Printf("%s\n", diff)
+			fmt.Println(diff)
 
 			return nil
 		},

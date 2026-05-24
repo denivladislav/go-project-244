@@ -48,7 +48,7 @@ func main() {
 				return fmt.Errorf("gen diff failed: %w", err)
 			}
 
-			fmt.Println(diff)
+			fmt.Printf("\n%s\n", diff)
 
 			return nil
 		},

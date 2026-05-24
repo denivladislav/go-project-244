@@ -11,7 +11,7 @@ import (
 	"github.com/stretchr/testify/require"
 
 	"code/internal/format"
-	"code/internal/parse"
+	"code/internal/parsers"
 )
 
 var testDataPath = filepath.Join(".", "testdata", "fixture")
@@ -51,7 +51,7 @@ func TestGenDiff_Errors(t *testing.T) {
 			pathB:      filepath.Join(testDataPath, "file2.json"),
 			formatName: "stylish",
 			checkErr: func(err error) bool {
-				var extErr parse.UnsupportedExtError
+				var extErr parsers.UnsupportedExtError
 				return errors.As(err, &extErr)
 			},
 		},
@@ -91,7 +91,13 @@ func TestGenDiff(t *testing.T) {
 			pathA:      filepath.Join(testDataPath, "file1.json"),
 			pathB:      filepath.Join(testDataPath, "file2.json"),
 			formatName: "stylish",
-			pathWant:   filepath.Join(testDataPath, "result_json_stylish.txt"),
+			pathWant:   filepath.Join(testDataPath, "result_flat_stylish.txt"),
+		},
+		"generates correct diff for yml and yaml with stylish format": {
+			pathA:      filepath.Join(testDataPath, "file1.yml"),
+			pathB:      filepath.Join(testDataPath, "file2.yaml"),
+			formatName: "stylish",
+			pathWant:   filepath.Join(testDataPath, "result_flat_stylish.txt"),
 		},
 	}
 

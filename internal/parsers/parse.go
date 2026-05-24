@@ -1,12 +1,11 @@
-package parse
+package parsers
 
-import (
-	"encoding/json"
-	"fmt"
-)
+import "fmt"
 
 var parseDict = map[string]func([]byte) (map[string]any, error){
 	".json": ParseJson,
+	".yml":  ParseYaml,
+	".yaml": ParseYaml,
 }
 
 type UnsupportedExtError struct {
@@ -15,17 +14,6 @@ type UnsupportedExtError struct {
 
 func (e UnsupportedExtError) Error() string {
 	return fmt.Sprintf(`unsupported file extension: "%s"`, e.ext)
-}
-
-func ParseJson(data []byte) (map[string]any, error) {
-	var m map[string]any
-
-	err := json.Unmarshal(data, &m)
-	if err != nil {
-		return nil, err
-	}
-
-	return m, nil
 }
 
 func getParseFn(ext string) (func([]byte) (map[string]any, error), error) {

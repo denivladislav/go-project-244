@@ -1,6 +1,7 @@
 package ast
 
 import (
+	"encoding/json"
 	"fmt"
 	"maps"
 	"slices"
@@ -12,6 +13,11 @@ type Group struct {
 
 func (g Group) String() string {
 	return g.slug
+}
+
+func (g Group) MarshalJSON() ([]byte, error) {
+	s := g.String()
+	return json.Marshal(s)
 }
 
 type UnknownGroupError struct {
@@ -31,11 +37,11 @@ var (
 )
 
 type Node struct {
-	Key       string
-	PrevValue any
-	Value     any
-	Group     Group
-	Children  []Node
+	Key       string `json:"key"`
+	PrevValue any    `json:"prev_value,omitempty"`
+	Value     any    `json:"value"`
+	Group     Group  `json:"group"`
+	Children  []Node `json:"children,omitempty"`
 }
 
 type AST = []Node

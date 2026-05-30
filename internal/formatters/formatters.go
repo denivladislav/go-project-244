@@ -9,6 +9,7 @@ import (
 var formatDict = map[string]func(ast.AST) (string, error){
 	"stylish": MakeStylish,
 	"plain":   MakePlain,
+	"json":    MakeJson,
 }
 
 type UnsupportedFormatError struct {

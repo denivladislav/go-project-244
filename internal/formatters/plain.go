@@ -90,7 +90,7 @@ func MakePlain(nodes ast.AST) (string, error) {
 		return "", fmt.Errorf("make plain failed: %w", err)
 	}
 
-	str := b.String()
+	res := b.String()
 
-	return strings.TrimSpace(str), nil
+	return strings.TrimSpace(res), nil
 }

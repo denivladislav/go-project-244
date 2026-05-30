@@ -27,6 +27,7 @@ var (
 	Added      = Group{"added"}
 	Unmodified = Group{"unmodified"}
 	Modified   = Group{"modified"}
+	Nested     = Group{"nested"}
 )
 
 type Node struct {
@@ -34,12 +35,12 @@ type Node struct {
 	PrevValue any
 	Value     any
 	Group     Group
-	// children  []Node
+	Children  []Node
 }
 
-type Ast = []Node
+type AST = []Node
 
-func BuildAst(objA, objB map[string]any) Ast {
+func BuildAst(objA, objB map[string]any) AST {
 	set := make(map[string]struct{}, len(objA)+len(objB))
 
 	for key := range objA {
@@ -66,12 +67,20 @@ func BuildAst(objA, objB map[string]any) Ast {
 			continue
 		}
 
-		if objA[key] == objB[key] {
-			nodes[i] = Node{Key: key, Value: objA[key], Group: Unmodified}
+		childA, isObjChildA := objA[key].(map[string]any)
+		childB, isObjChildB := objB[key].(map[string]any)
+
+		if isObjChildA && isObjChildB {
+			nodes[i] = Node{Key: key, Children: BuildAst(childA, childB), Group: Nested}
 			continue
 		}
 
-		nodes[i] = Node{Key: key, PrevValue: objA[key], Value: objB[key], Group: Modified}
+		if objA[key] != objB[key] {
+			nodes[i] = Node{Key: key, PrevValue: objA[key], Value: objB[key], Group: Modified}
+			continue
+		}
+
+		nodes[i] = Node{Key: key, Value: objA[key], Group: Unmodified}
 	}
 
 	return nodes

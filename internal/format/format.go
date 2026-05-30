@@ -8,7 +8,7 @@ import (
 
 var DefaultFormat = "stylish"
 
-var formatDict = map[string]func(ast.Ast) (string, error){
+var formatDict = map[string]func(ast.AST) (string, error){
 	"stylish": MakeStylish,
 }
 
@@ -20,7 +20,7 @@ func (e UnsupportedFormatError) Error() string {
 	return fmt.Sprintf(`unsupported format: "%s"`, e.format)
 }
 
-func getFormatFn(format string) (func(ast.Ast) (string, error), error) {
+func getFormatFn(format string) (func(ast.AST) (string, error), error) {
 	formatFn, ok := formatDict[format]
 	if !ok {
 		err := UnsupportedFormatError{format}
@@ -30,7 +30,7 @@ func getFormatFn(format string) (func(ast.Ast) (string, error), error) {
 	return formatFn, nil
 }
 
-func FormatAst(nodes ast.Ast, format string) (string, error) {
+func FormatAst(nodes ast.AST, format string) (string, error) {
 	formatFn, err := getFormatFn(format)
 	if err != nil {
 		return "", fmt.Errorf("get format fn failed: %w", err)

@@ -91,13 +91,13 @@ func TestGenDiff(t *testing.T) {
 			pathA:      filepath.Join(testDataPath, "file1.json"),
 			pathB:      filepath.Join(testDataPath, "file2.json"),
 			formatName: "stylish",
-			pathWant:   filepath.Join(testDataPath, "result_flat_stylish.txt"),
+			pathWant:   filepath.Join(testDataPath, "result_stylish.txt"),
 		},
 		"generates correct diff for yml and yaml with stylish format": {
 			pathA:      filepath.Join(testDataPath, "file1.yml"),
 			pathB:      filepath.Join(testDataPath, "file2.yaml"),
 			formatName: "stylish",
-			pathWant:   filepath.Join(testDataPath, "result_flat_stylish.txt"),
+			pathWant:   filepath.Join(testDataPath, "result_stylish.txt"),
 		},
 	}
 

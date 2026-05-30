@@ -10,12 +10,11 @@ import (
 	"github.com/urfave/cli/v3"
 
 	gendiff "code"
-	"code/internal/format"
 )
 
 var formatFlag = &cli.StringFlag{
 	Name:    "format",
-	Value:   format.DefaultFormat,
+	Value:   "stylish",
 	Usage:   "output format",
 	Aliases: []string{"f"},
 }

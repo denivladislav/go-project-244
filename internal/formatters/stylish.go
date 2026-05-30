@@ -1,4 +1,4 @@
-package format
+package formatters
 
 import (
 	"fmt"
@@ -9,13 +9,13 @@ import (
 	"code/internal/ast"
 )
 
-func makeIndent(depth, shift int) string {
+func makeStylishIndent(depth, shift int) string {
 	return strings.Repeat(" ", depth*4-shift)
 }
 
-func makeLine(options LineOptions) string {
+func makeStylishLine(options LineOptions) string {
 	shift := len(options.marker) + 1
-	indent := makeIndent(options.depth, shift)
+	indent := makeStylishIndent(options.depth, shift)
 
 	return fmt.Sprintf("%s%s %s: %v\n",
 		indent,
@@ -24,7 +24,7 @@ func makeLine(options LineOptions) string {
 		options.value)
 }
 
-func stringify(value any, depth int) string {
+func stringifyStylish(value any, depth int) string {
 	switch v := value.(type) {
 	case nil:
 		return "null"
@@ -36,11 +36,11 @@ func stringify(value any, depth int) string {
 		sortedKeys := slices.Sorted(keys)
 
 		for _, key := range sortedKeys {
-			stringifiedValue := stringify(v[key], depth+1)
+			strValue := stringifyStylish(v[key], depth+1)
 
-			newLine := makeLine(LineOptions{
+			newLine := makeStylishLine(LineOptions{
 				key:    key,
-				value:  stringifiedValue,
+				value:  strValue,
 				marker: " ",
 				depth:  depth,
 			})
@@ -48,7 +48,7 @@ func stringify(value any, depth int) string {
 			b.WriteString(newLine)
 		}
 
-		bracketIndent := makeIndent(depth-1, 0)
+		bracketIndent := makeStylishIndent(depth-1, 0)
 		fmt.Fprintf(&b, "%s}", bracketIndent)
 
 		return b.String()
@@ -70,11 +70,11 @@ func MakeStylish(nodes ast.AST) (string, error) {
 
 	iter = func(nodes ast.AST, depth int) error {
 		for _, node := range nodes {
-			strValue := stringify(node.Value, depth+1)
+			strValue := stringifyStylish(node.Value, depth+1)
 
 			switch node.Group {
 			case ast.Deleted:
-				deletedLine := makeLine(
+				deletedLine := makeStylishLine(
 					LineOptions{
 						key:    node.Key,
 						value:  strValue,
@@ -86,7 +86,7 @@ func MakeStylish(nodes ast.AST) (string, error) {
 
 				continue
 			case ast.Added:
-				addedLine := makeLine(
+				addedLine := makeStylishLine(
 					LineOptions{
 						key:    node.Key,
 						value:  strValue,
@@ -98,7 +98,7 @@ func MakeStylish(nodes ast.AST) (string, error) {
 
 				continue
 			case ast.Unmodified:
-				unmodifiedLine := makeLine(
+				unmodifiedLine := makeStylishLine(
 					LineOptions{
 						key:    node.Key,
 						value:  strValue,
@@ -110,8 +110,8 @@ func MakeStylish(nodes ast.AST) (string, error) {
 
 				continue
 			case ast.Modified:
-				strPrevValue := stringify(node.PrevValue, depth+1)
-				deletedLine := makeLine(
+				strPrevValue := stringifyStylish(node.PrevValue, depth+1)
+				deletedLine := makeStylishLine(
 					LineOptions{
 						key:    node.Key,
 						value:  strPrevValue,
@@ -121,7 +121,7 @@ func MakeStylish(nodes ast.AST) (string, error) {
 				)
 				b.WriteString(deletedLine)
 
-				addedLine := makeLine(
+				addedLine := makeStylishLine(
 					LineOptions{
 						key:    node.Key,
 						value:  strValue,
@@ -133,7 +133,7 @@ func MakeStylish(nodes ast.AST) (string, error) {
 
 				continue
 			case ast.Nested:
-				keyLine := makeLine(LineOptions{
+				keyLine := makeStylishLine(LineOptions{
 					key:    node.Key,
 					value:  "{",
 					marker: " ",
@@ -146,7 +146,7 @@ func MakeStylish(nodes ast.AST) (string, error) {
 					return fmt.Errorf("make stylish failed: %w", err)
 				}
 
-				bracketIndent := makeIndent(depth, 0)
+				bracketIndent := makeStylishIndent(depth, 0)
 				fmt.Fprintf(&b, "%s}\n", bracketIndent)
 
 				continue

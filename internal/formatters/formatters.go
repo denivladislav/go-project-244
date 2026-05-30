@@ -1,4 +1,4 @@
-package format
+package formatters
 
 import (
 	"fmt"
@@ -6,10 +6,9 @@ import (
 	"code/internal/ast"
 )
 
-var DefaultFormat = "stylish"
-
 var formatDict = map[string]func(ast.AST) (string, error){
 	"stylish": MakeStylish,
+	"plain":   MakePlain,
 }
 
 type UnsupportedFormatError struct {

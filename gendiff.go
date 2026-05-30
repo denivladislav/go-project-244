@@ -6,7 +6,7 @@ import (
 	"path/filepath"
 
 	"code/internal/ast"
-	"code/internal/format"
+	"code/internal/formatters"
 	"code/internal/parsers"
 )
 
@@ -36,5 +36,5 @@ func GenDiff(pathA, pathB, formatName string) (string, error) {
 
 	newAst := ast.BuildAst(parsedA, parsedB)
 
-	return format.FormatAst(newAst, formatName)
+	return formatters.FormatAst(newAst, formatName)
 }

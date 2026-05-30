@@ -10,7 +10,7 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
-	"code/internal/format"
+	"code/internal/formatters"
 	"code/internal/parsers"
 )
 
@@ -68,7 +68,7 @@ func TestGenDiff_Errors(t *testing.T) {
 			pathB:      filepath.Join(testDataPath, "file2.json"),
 			formatName: "unknown",
 			checkErr: func(err error) bool {
-				var formatError format.UnsupportedFormatError
+				var formatError formatters.UnsupportedFormatError
 				return errors.As(err, &formatError)
 			},
 		},
@@ -98,6 +98,12 @@ func TestGenDiff(t *testing.T) {
 			pathB:      filepath.Join(testDataPath, "file2.yaml"),
 			formatName: "stylish",
 			pathWant:   filepath.Join(testDataPath, "result_stylish.txt"),
+		},
+		"generates correct diff for json with plain format": {
+			pathA:      filepath.Join(testDataPath, "file1.yml"),
+			pathB:      filepath.Join(testDataPath, "file2.yaml"),
+			formatName: "plain",
+			pathWant:   filepath.Join(testDataPath, "result_plain.txt"),
 		},
 	}
 

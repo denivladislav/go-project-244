@@ -46,7 +46,7 @@ type Node struct {
 
 type AST = []Node
 
-func BuildAst(objA, objB map[string]any) AST {
+func BuildDiffAst(objA, objB map[string]any) AST {
 	set := make(map[string]struct{}, len(objA)+len(objB))
 
 	for key := range objA {
@@ -77,7 +77,7 @@ func BuildAst(objA, objB map[string]any) AST {
 		childB, isObjChildB := objB[key].(map[string]any)
 
 		if isObjChildA && isObjChildB {
-			nodes[i] = Node{Key: key, Children: BuildAst(childA, childB), Group: Nested}
+			nodes[i] = Node{Key: key, Children: BuildDiffAst(childA, childB), Group: Nested}
 			continue
 		}
 

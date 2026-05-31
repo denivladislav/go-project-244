@@ -34,7 +34,7 @@ func GenDiff(pathA, pathB, formatName string) (string, error) {
 		return "", fmt.Errorf("parse content failed: %w", err)
 	}
 
-	newAst := ast.BuildAst(parsedA, parsedB)
+	newAst := ast.BuildDiffAst(parsedA, parsedB)
 
 	return formatters.FormatAst(newAst, formatName)
 }

@@ -5,6 +5,8 @@ import (
 	"fmt"
 	"maps"
 	"slices"
+
+	"reflect"
 )
 
 type Group struct {
@@ -81,7 +83,7 @@ func BuildDiffAst(objA, objB map[string]any) AST {
 			continue
 		}
 
-		if objA[key] != objB[key] {
+		if !reflect.DeepEqual(objA[key], objB[key]) {
 			nodes[i] = Node{Key: key, PrevValue: objA[key], Value: objB[key], Group: Modified}
 			continue
 		}

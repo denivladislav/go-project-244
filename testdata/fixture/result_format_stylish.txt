@@ -10,6 +10,8 @@
             key5: value5
         }
         setting6: {
+          - arr1: [1 2 3]
+          + arr1: [1 2 3 4]
             doge: {
               - wow: 
               + wow: so much
@@ -24,6 +26,7 @@
         foo: bar
       - nest: {
             key: value
+            old: [one two three]
         }
       + nest: str
     }
@@ -41,4 +44,5 @@
         }
         fee: 100500
     }
+  + new: [one two three]
 }

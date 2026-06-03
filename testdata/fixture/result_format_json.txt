@@ -45,6 +45,21 @@
           "group": "nested",
           "children": [
             {
+              "key": "arr1",
+              "prev_value": [
+                1,
+                2,
+                3
+              ],
+              "value": [
+                1,
+                2,
+                3,
+                4
+              ],
+              "group": "modified"
+            },
+            {
               "key": "doge",
               "value": null,
               "group": "nested",
@@ -90,7 +105,12 @@
         {
           "key": "nest",
           "prev_value": {
-            "key": "value"
+            "key": "value",
+            "old": [
+              "one",
+              "two",
+              "three"
+            ]
           },
           "value": "str",
           "group": "modified"
@@ -117,6 +137,15 @@
         },
         "fee": 100500
       },
+      "group": "added"
+    },
+    {
+      "key": "new",
+      "value": [
+        "one",
+        "two",
+        "three"
+      ],
       "group": "added"
     }
   ]

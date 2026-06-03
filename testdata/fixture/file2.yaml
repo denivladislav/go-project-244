@@ -10,6 +10,11 @@ common:
     ops: vops
     doge:
       wow: so much
+    arr1:
+    - 1
+    - 2
+    - 3
+    - 4
 group1:
   foo: bar
   baz: bars
@@ -19,3 +24,7 @@ group3:
     id:
       number: 45
   fee: 100500
+new:
+- one
+- two
+- three

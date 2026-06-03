@@ -6,7 +6,7 @@ import (
 	"slices"
 	"strings"
 
-	"code/internal/ast"
+	"code/internal/diff"
 )
 
 func makeStylishIndent(depth, shift int) string {
@@ -62,18 +62,18 @@ type LineOptions struct {
 	depth              int
 }
 
-func MakeStylish(nodes ast.AST) (string, error) {
+func MakeStylish(nodes diff.Diff) (string, error) {
 	var b strings.Builder
 	b.WriteString("{\n")
 
-	var iter func(nodes ast.AST, depth int) error
+	var iter func(nodes diff.Diff, depth int) error
 
-	iter = func(nodes ast.AST, depth int) error {
+	iter = func(nodes diff.Diff, depth int) error {
 		for _, node := range nodes {
 			strValue := stringifyStylish(node.Value, depth+1)
 
 			switch node.Group {
-			case ast.Deleted:
+			case diff.Deleted:
 				deletedLine := makeStylishLine(
 					LineOptions{
 						key:    node.Key,
@@ -85,7 +85,7 @@ func MakeStylish(nodes ast.AST) (string, error) {
 				b.WriteString(deletedLine)
 
 				continue
-			case ast.Added:
+			case diff.Added:
 				addedLine := makeStylishLine(
 					LineOptions{
 						key:    node.Key,
@@ -97,7 +97,7 @@ func MakeStylish(nodes ast.AST) (string, error) {
 				b.WriteString(addedLine)
 
 				continue
-			case ast.Unmodified:
+			case diff.Unmodified:
 				unmodifiedLine := makeStylishLine(
 					LineOptions{
 						key:    node.Key,
@@ -109,7 +109,7 @@ func MakeStylish(nodes ast.AST) (string, error) {
 				b.WriteString(unmodifiedLine)
 
 				continue
-			case ast.Modified:
+			case diff.Modified:
 				strPrevValue := stringifyStylish(node.PrevValue, depth+1)
 				deletedLine := makeStylishLine(
 					LineOptions{
@@ -132,7 +132,7 @@ func MakeStylish(nodes ast.AST) (string, error) {
 				b.WriteString(addedLine)
 
 				continue
-			case ast.Nested:
+			case diff.Nested:
 				keyLine := makeStylishLine(LineOptions{
 					key:    node.Key,
 					value:  "{",
@@ -151,7 +151,7 @@ func MakeStylish(nodes ast.AST) (string, error) {
 
 				continue
 			default:
-				return ast.UnknownGroupError{Group: node.Group}
+				return diff.UnknownGroupError{Group: node.Group}
 			}
 		}
 

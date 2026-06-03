@@ -1,4 +1,4 @@
-package ast
+package diff
 
 import (
 	"fmt"
@@ -33,9 +33,9 @@ type Node struct {
 	Children  []Node `json:"children,omitempty"`
 }
 
-type AST = []Node
+type Diff = []Node
 
-func BuildDiffAst(objA, objB map[string]any) AST {
+func Build(objA, objB map[string]any) Diff {
 	set := make(map[string]struct{}, len(objA)+len(objB))
 
 	for key := range objA {
@@ -66,7 +66,7 @@ func BuildDiffAst(objA, objB map[string]any) AST {
 		childB, isObjChildB := objB[key].(map[string]any)
 
 		if isObjChildA && isObjChildB {
-			nodes[i] = Node{Key: key, Children: BuildDiffAst(childA, childB), Group: Nested}
+			nodes[i] = Node{Key: key, Children: Build(childA, childB), Group: Nested}
 			continue
 		}
 

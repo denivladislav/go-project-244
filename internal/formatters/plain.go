@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"strings"
 
-	"code/internal/ast"
+	"code/internal/diff"
 )
 
 func makePlainPath(path, key string) string {
@@ -31,24 +31,24 @@ func stringifyPlain(value any) string {
 	}
 }
 
-func MakePlain(nodes ast.AST) (string, error) {
+func MakePlain(nodes diff.Diff) (string, error) {
 	var b strings.Builder
 
-	var iter func(nodes ast.AST, path string) error
+	var iter func(nodes diff.Diff, path string) error
 
-	iter = func(nodes ast.AST, path string) error {
+	iter = func(nodes diff.Diff, path string) error {
 		for _, node := range nodes {
 			newPath := makePlainPath(path, node.Key)
 
 			strValue := stringifyPlain(node.Value)
 
 			switch node.Group {
-			case ast.Deleted:
+			case diff.Deleted:
 				deletedLine := fmt.Sprintf("Property '%s' was removed\n", newPath)
 				b.WriteString(deletedLine)
 
 				continue
-			case ast.Added:
+			case diff.Added:
 				addedLine := fmt.Sprintf(
 					"Property '%s' was added with value: %s\n",
 					newPath,
@@ -57,9 +57,9 @@ func MakePlain(nodes ast.AST) (string, error) {
 				b.WriteString(addedLine)
 
 				continue
-			case ast.Unmodified:
+			case diff.Unmodified:
 				continue
-			case ast.Modified:
+			case diff.Modified:
 				strPrevValue := stringifyPlain(node.PrevValue)
 				modifiedLine := fmt.Sprintf(
 					"Property '%s' was updated. From %s to %s\n",
@@ -70,7 +70,7 @@ func MakePlain(nodes ast.AST) (string, error) {
 				b.WriteString(modifiedLine)
 
 				continue
-			case ast.Nested:
+			case diff.Nested:
 				err := iter(node.Children, newPath)
 				if err != nil {
 					return fmt.Errorf("make plain failed: %w", err)
@@ -78,7 +78,7 @@ func MakePlain(nodes ast.AST) (string, error) {
 
 				continue
 			default:
-				return ast.UnknownGroupError{Group: node.Group}
+				return diff.UnknownGroupError{Group: node.Group}
 			}
 		}
 

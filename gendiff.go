@@ -5,7 +5,7 @@ import (
 	"os"
 	"path/filepath"
 
-	"code/internal/ast"
+	"code/internal/diff"
 	"code/internal/formatters"
 	"code/internal/parsers"
 )
@@ -34,7 +34,7 @@ func GenDiff(pathA, pathB, formatName string) (string, error) {
 		return "", fmt.Errorf(`parse file content for "%s" failed: %w`, pathB, err)
 	}
 
-	newAst := ast.BuildDiffAst(parsedA, parsedB)
+	diff := diff.Build(parsedA, parsedB)
 
-	return formatters.FormatAst(newAst, formatName)
+	return formatters.FormatDiff(diff, formatName)
 }

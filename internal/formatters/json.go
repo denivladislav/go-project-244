@@ -4,15 +4,15 @@ import (
 	"encoding/json"
 	"strings"
 
-	"code/internal/ast"
+	"code/internal/diff"
 )
 
 type Root struct {
-	Key      string  `json:"key"`
-	Children ast.AST `json:"children"`
+	Key      string    `json:"key"`
+	Children diff.Diff `json:"children"`
 }
 
-func MakeJSON(nodes ast.AST) (string, error) {
+func MakeJSON(nodes diff.Diff) (string, error) {
 	indent := strings.Repeat(" ", 2)
 
 	root := Root{

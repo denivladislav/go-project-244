@@ -3,14 +3,8 @@ package formatters
 import (
 	"fmt"
 
-	"code/internal/ast"
+	"code/internal/diff"
 )
-
-var formatDict = map[string]func(ast.AST) (string, error){
-	"stylish": MakeStylish,
-	"plain":   MakePlain,
-	"json":    MakeJSON,
-}
 
 type UnsupportedFormatError struct {
 	format string
@@ -20,26 +14,15 @@ func (e UnsupportedFormatError) Error() string {
 	return fmt.Sprintf(`unsupported format: "%s"`, e.format)
 }
 
-func getFormatFn(format string) (func(ast.AST) (string, error), error) {
-	formatFn, ok := formatDict[format]
-	if !ok {
-		err := UnsupportedFormatError{format}
-		return nil, err
+func FormatDiff(nodes diff.Diff, format string) (string, error) {
+	switch format {
+	case "stylish":
+		return MakeStylish(nodes)
+	case "plain":
+		return MakePlain(nodes)
+	case "json":
+		return MakeJSON(nodes)
+	default:
+		return "", UnsupportedFormatError{format}
 	}
-
-	return formatFn, nil
-}
-
-func FormatAst(nodes ast.AST, format string) (string, error) {
-	formatFn, err := getFormatFn(format)
-	if err != nil {
-		return "", fmt.Errorf("get format fn failed: %w", err)
-	}
-
-	formattedStr, err := formatFn(nodes)
-	if err != nil {
-		return "", fmt.Errorf("format fn failed: %w", err)
-	}
-
-	return formattedStr, nil
 }

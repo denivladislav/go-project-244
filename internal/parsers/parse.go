@@ -26,7 +26,7 @@ func getParseFn(ext string) (func([]byte) (map[string]any, error), error) {
 	return parseFn, nil
 }
 
-func ParseContent(content []byte, ext string) (map[string]any, error) {
+func ParseFileContent(content []byte, ext string) (map[string]any, error) {
 	parseFn, err := getParseFn(ext)
 	if err != nil {
 		return nil, fmt.Errorf("get parse fn failed: %w", err)

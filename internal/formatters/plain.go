@@ -78,7 +78,7 @@ func MakePlain(nodes ast.AST) (string, error) {
 
 				continue
 			default:
-				return ast.UnknownGroupError{Group: node.Group.String()}
+				return ast.UnknownGroupError{Group: node.Group}
 			}
 		}
 

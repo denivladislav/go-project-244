@@ -12,7 +12,7 @@ type Root struct {
 	Children ast.AST `json:"children"`
 }
 
-func MakeJson(nodes ast.AST) (string, error) {
+func MakeJSON(nodes ast.AST) (string, error) {
 	indent := strings.Repeat(" ", 2)
 
 	root := Root{

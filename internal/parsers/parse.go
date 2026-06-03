@@ -3,9 +3,9 @@ package parsers
 import "fmt"
 
 var parseDict = map[string]func([]byte) (map[string]any, error){
-	".json": ParseJson,
-	".yml":  ParseYaml,
-	".yaml": ParseYaml,
+	".json": ParseJSON,
+	".yml":  ParseYAML,
+	".yaml": ParseYAML,
 }
 
 type UnsupportedExtError struct {

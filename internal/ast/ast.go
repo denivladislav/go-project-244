@@ -1,7 +1,6 @@
 package ast
 
 import (
-	"encoding/json"
 	"fmt"
 	"maps"
 	"slices"
@@ -9,33 +8,21 @@ import (
 	"reflect"
 )
 
-type Group struct {
-	slug string
-}
-
-func (g Group) String() string {
-	return g.slug
-}
-
-func (g Group) MarshalJSON() ([]byte, error) {
-	s := g.String()
-	return json.Marshal(s)
-}
-
+type Group string
 type UnknownGroupError struct {
-	Group string
+	Group Group
 }
 
 func (e UnknownGroupError) Error() string {
 	return fmt.Sprintf(`unknown node group: "%s"`, e.Group)
 }
 
-var (
-	Deleted    = Group{"deleted"}
-	Added      = Group{"added"}
-	Unmodified = Group{"unmodified"}
-	Modified   = Group{"modified"}
-	Nested     = Group{"nested"}
+const (
+	Deleted    Group = "deleted"
+	Added      Group = "added"
+	Unmodified Group = "unmodified"
+	Modified   Group = "modified"
+	Nested     Group = "nested"
 )
 
 type Node struct {

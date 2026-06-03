@@ -87,7 +87,7 @@ func TestGenDiff(t *testing.T) {
 	tests := map[string]struct {
 		pathA, pathB, formatName, pathWant string
 	}{
-		"generates correct diff for json with stylish format": {
+		"generates correct diff for JSON with stylish format": {
 			pathA:      filepath.Join(testDataPath, "file1.json"),
 			pathB:      filepath.Join(testDataPath, "file2.json"),
 			formatName: "stylish",
@@ -99,13 +99,13 @@ func TestGenDiff(t *testing.T) {
 			formatName: "stylish",
 			pathWant:   filepath.Join(testDataPath, "result_format_stylish.txt"),
 		},
-		"generates correct diff for json with plain format": {
+		"generates correct diff for JSON with plain format": {
 			pathA:      filepath.Join(testDataPath, "file1.json"),
 			pathB:      filepath.Join(testDataPath, "file2.json"),
 			formatName: "plain",
 			pathWant:   filepath.Join(testDataPath, "result_format_plain.txt"),
 		},
-		"generates correct diff for json with json format": {
+		"generates correct diff for JSON with json format": {
 			pathA:      filepath.Join(testDataPath, "file1.json"),
 			pathB:      filepath.Join(testDataPath, "file2.json"),
 			formatName: "json",

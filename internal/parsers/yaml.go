@@ -2,7 +2,7 @@ package parsers
 
 import "gopkg.in/yaml.v3"
 
-func ParseYaml(data []byte) (map[string]any, error) {
+func ParseYAML(data []byte) (map[string]any, error) {
 	var parsedContent map[string]any
 
 	err := yaml.Unmarshal(data, &parsedContent)

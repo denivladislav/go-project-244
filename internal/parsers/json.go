@@ -2,7 +2,7 @@ package parsers
 
 import "encoding/json"
 
-func ParseJson(data []byte) (map[string]any, error) {
+func ParseJSON(data []byte) (map[string]any, error) {
 	var parsedContent map[string]any
 
 	err := json.Unmarshal(data, &parsedContent)

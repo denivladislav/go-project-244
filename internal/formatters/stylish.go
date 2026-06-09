@@ -137,7 +137,7 @@ func writeStylishNodes(pBuilder *strings.Builder, nodes []diff.Node, depth int) 
 
 			err := writeStylishNodes(pBuilder, node.Children, depth+1)
 			if err != nil {
-				return fmt.Errorf("make stylish failed: %w", err)
+				return err
 			}
 
 			bracketIndent := makeStylishIndent(depth, 0)
@@ -145,7 +145,7 @@ func writeStylishNodes(pBuilder *strings.Builder, nodes []diff.Node, depth int) 
 
 			continue
 		default:
-			return diff.UnknownGroupError{Group: node.Group}
+			return fmt.Errorf(`%w "%s"`, diff.ErrUnknownGroup, node.Group)
 		}
 	}
 

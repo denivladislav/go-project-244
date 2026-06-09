@@ -51,8 +51,7 @@ func TestGenDiff_Errors(t *testing.T) {
 			pathB:      filepath.Join(testDataPath, "file2.json"),
 			formatName: "stylish",
 			checkErr: func(err error) bool {
-				var extErr parsers.UnsupportedExtError
-				return errors.As(err, &extErr)
+				return errors.Is(err, parsers.ErrUnsupportedExt)
 			},
 		},
 		"invalid file causes error": {
@@ -60,7 +59,7 @@ func TestGenDiff_Errors(t *testing.T) {
 			pathB:      filepath.Join(testDataPath, "file2.json"),
 			formatName: "stylish",
 			checkErr: func(err error) bool {
-				return err != nil
+				return errors.Is(err, parsers.ErrInvalidJSON)
 			},
 		},
 		"unsupported output format causes error": {
@@ -68,8 +67,7 @@ func TestGenDiff_Errors(t *testing.T) {
 			pathB:      filepath.Join(testDataPath, "file2.json"),
 			formatName: "unknown",
 			checkErr: func(err error) bool {
-				var formatError formatters.UnsupportedFormatError
-				return errors.As(err, &formatError)
+				return errors.Is(err, formatters.ErrUnsupportedFormat)
 			},
 		},
 	}

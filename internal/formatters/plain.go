@@ -68,12 +68,12 @@ func writePlainNodes(pBuilder *strings.Builder, nodes []diff.Node, path string) 
 		case diff.Nested:
 			err := writePlainNodes(pBuilder, node.Children, newPath)
 			if err != nil {
-				return fmt.Errorf("make plain failed: %w", err)
+				return err
 			}
 
 			continue
 		default:
-			return diff.UnknownGroupError{Group: node.Group}
+			return fmt.Errorf(`%w "%s"`, diff.ErrUnknownGroup, node.Group)
 		}
 	}
 

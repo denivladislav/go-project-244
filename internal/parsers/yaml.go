@@ -1,6 +1,13 @@
 package parsers
 
-import "gopkg.in/yaml.v3"
+import (
+	"errors"
+	"fmt"
+
+	"gopkg.in/yaml.v3"
+)
+
+var ErrInvalidYAML = errors.New("invalid YAML")
 
 // ParseYAML parses YAML-encoded data to key-value map.
 func ParseYAML(data []byte) (map[string]any, error) {
@@ -8,7 +15,7 @@ func ParseYAML(data []byte) (map[string]any, error) {
 
 	err := yaml.Unmarshal(data, &parsedContent)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf(`%w: %w`, ErrInvalidYAML, err)
 	}
 
 	return parsedContent, nil

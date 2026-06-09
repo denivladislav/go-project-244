@@ -1,15 +1,12 @@
 // Package parsers implements parsing of structured files like JSON and YAML.
 package parsers
 
-import "fmt"
+import (
+	"errors"
+	"fmt"
+)
 
-type UnsupportedExtError struct {
-	ext string
-}
-
-func (e UnsupportedExtError) Error() string {
-	return fmt.Sprintf(`unsupported file extension: "%s"`, e.ext)
-}
+var ErrUnsupportedExt = errors.New("unsupported file extension")
 
 // ParseFileContent parses contents of a file depending on its extension.
 //
@@ -21,6 +18,6 @@ func ParseFileContent(content []byte, ext string) (map[string]any, error) {
 	case ".yml", ".yaml":
 		return ParseYAML(content)
 	default:
-		return nil, UnsupportedExtError{ext}
+		return nil, fmt.Errorf(`%w "%s"`, ErrUnsupportedExt, ext)
 	}
 }

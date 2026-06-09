@@ -2,7 +2,7 @@
 package diff
 
 import (
-	"fmt"
+	"errors"
 	"maps"
 	"reflect"
 	"slices"
@@ -11,13 +11,7 @@ import (
 // A Group marks whether a Node was added, deleted, modified, etc.
 type Group string
 
-type UnknownGroupError struct {
-	Group Group
-}
-
-func (e UnknownGroupError) Error() string {
-	return fmt.Sprintf(`unknown node group: "%s"`, e.Group)
-}
+var ErrUnknownGroup = errors.New("unknown node group")
 
 const (
 	Deleted    Group = "deleted"

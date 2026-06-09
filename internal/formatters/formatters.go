@@ -2,18 +2,13 @@
 package formatters
 
 import (
+	"errors"
 	"fmt"
 
 	"code/internal/diff"
 )
 
-type UnsupportedFormatError struct {
-	format string
-}
-
-func (e UnsupportedFormatError) Error() string {
-	return fmt.Sprintf(`unsupported format: "%s"`, e.format)
-}
+var ErrUnsupportedFormat = errors.New("unsupported format")
 
 // FormatDiff returns a string representing diff nodes depending on format.
 //
@@ -27,6 +22,6 @@ func FormatDiff(nodes []diff.Node, format string) (string, error) {
 	case "json":
 		return MakeJSON(nodes)
 	default:
-		return "", UnsupportedFormatError{format}
+		return "", fmt.Errorf(`%w "%s"`, ErrUnsupportedFormat, format)
 	}
 }

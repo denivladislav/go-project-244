@@ -29,8 +29,8 @@ func stringifyStylish(value any, depth int) string {
 	case nil:
 		return "null"
 	case map[string]any:
-		var b strings.Builder
-		b.WriteString("{\n")
+		var builder strings.Builder
+		builder.WriteString("{\n")
 
 		keys := maps.Keys(v)
 		sortedKeys := slices.Sorted(keys)
@@ -45,13 +45,13 @@ func stringifyStylish(value any, depth int) string {
 				depth:  depth,
 			})
 
-			b.WriteString(newLine)
+			builder.WriteString(newLine)
 		}
 
 		bracketIndent := makeStylishIndent(depth-1, 0)
-		fmt.Fprintf(&b, "%s}", bracketIndent)
+		fmt.Fprintf(&builder, "%s}", bracketIndent)
 
-		return b.String()
+		return builder.String()
 	default:
 		return fmt.Sprintf("%v", value)
 	}
@@ -63,8 +63,8 @@ type LineOptions struct {
 }
 
 func MakeStylish(nodes diff.Diff) (string, error) {
-	var b strings.Builder
-	b.WriteString("{\n")
+	var builder strings.Builder
+	builder.WriteString("{\n")
 
 	var iter func(nodes diff.Diff, depth int) error
 
@@ -82,7 +82,7 @@ func MakeStylish(nodes diff.Diff) (string, error) {
 						depth:  depth,
 					},
 				)
-				b.WriteString(deletedLine)
+				builder.WriteString(deletedLine)
 
 				continue
 			case diff.Added:
@@ -94,7 +94,7 @@ func MakeStylish(nodes diff.Diff) (string, error) {
 						depth:  depth,
 					},
 				)
-				b.WriteString(addedLine)
+				builder.WriteString(addedLine)
 
 				continue
 			case diff.Unmodified:
@@ -106,7 +106,7 @@ func MakeStylish(nodes diff.Diff) (string, error) {
 						depth:  depth,
 					},
 				)
-				b.WriteString(unmodifiedLine)
+				builder.WriteString(unmodifiedLine)
 
 				continue
 			case diff.Modified:
@@ -119,7 +119,7 @@ func MakeStylish(nodes diff.Diff) (string, error) {
 						depth:  depth,
 					},
 				)
-				b.WriteString(deletedLine)
+				builder.WriteString(deletedLine)
 
 				addedLine := makeStylishLine(
 					LineOptions{
@@ -129,7 +129,7 @@ func MakeStylish(nodes diff.Diff) (string, error) {
 						depth:  depth,
 					},
 				)
-				b.WriteString(addedLine)
+				builder.WriteString(addedLine)
 
 				continue
 			case diff.Nested:
@@ -139,7 +139,7 @@ func MakeStylish(nodes diff.Diff) (string, error) {
 					marker: " ",
 					depth:  depth,
 				})
-				b.WriteString(keyLine)
+				builder.WriteString(keyLine)
 
 				err := iter(node.Children, depth+1)
 				if err != nil {
@@ -147,7 +147,7 @@ func MakeStylish(nodes diff.Diff) (string, error) {
 				}
 
 				bracketIndent := makeStylishIndent(depth, 0)
-				fmt.Fprintf(&b, "%s}\n", bracketIndent)
+				fmt.Fprintf(&builder, "%s}\n", bracketIndent)
 
 				continue
 			default:
@@ -163,7 +163,7 @@ func MakeStylish(nodes diff.Diff) (string, error) {
 		return "", fmt.Errorf("make stylish failed: %w", err)
 	}
 
-	b.WriteString("}")
+	builder.WriteString("}")
 
-	return b.String(), nil
+	return builder.String(), nil
 }

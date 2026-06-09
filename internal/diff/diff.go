@@ -3,12 +3,12 @@ package diff
 import (
 	"fmt"
 	"maps"
-	"slices"
-
 	"reflect"
+	"slices"
 )
 
 type Group string
+
 type UnknownGroupError struct {
 	Group Group
 }
@@ -35,7 +35,7 @@ type Node struct {
 
 type Diff = []Node
 
-func Build(objA, objB map[string]any) Diff {
+func getSortedKeys(objA, objB map[string]any) []string {
 	set := make(map[string]struct{}, len(objA)+len(objB))
 
 	for key := range objA {
@@ -47,8 +47,12 @@ func Build(objA, objB map[string]any) Diff {
 	}
 
 	keys := maps.Keys(set)
-	sortedKeys := slices.Sorted(keys)
 
+	return slices.Sorted(keys)
+}
+
+func Build(objA, objB map[string]any) Diff {
+	sortedKeys := getSortedKeys(objA, objB)
 	nodes := make([]Node, len(sortedKeys))
 
 	for i, key := range sortedKeys {

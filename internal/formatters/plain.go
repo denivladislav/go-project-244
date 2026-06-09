@@ -32,7 +32,7 @@ func stringifyPlain(value any) string {
 }
 
 func MakePlain(nodes diff.Diff) (string, error) {
-	var b strings.Builder
+	var builder strings.Builder
 
 	var iter func(nodes diff.Diff, path string) error
 
@@ -45,7 +45,7 @@ func MakePlain(nodes diff.Diff) (string, error) {
 			switch node.Group {
 			case diff.Deleted:
 				deletedLine := fmt.Sprintf("Property '%s' was removed\n", newPath)
-				b.WriteString(deletedLine)
+				builder.WriteString(deletedLine)
 
 				continue
 			case diff.Added:
@@ -54,7 +54,7 @@ func MakePlain(nodes diff.Diff) (string, error) {
 					newPath,
 					strValue,
 				)
-				b.WriteString(addedLine)
+				builder.WriteString(addedLine)
 
 				continue
 			case diff.Unmodified:
@@ -67,7 +67,7 @@ func MakePlain(nodes diff.Diff) (string, error) {
 					strPrevValue,
 					strValue,
 				)
-				b.WriteString(modifiedLine)
+				builder.WriteString(modifiedLine)
 
 				continue
 			case diff.Nested:
@@ -90,7 +90,7 @@ func MakePlain(nodes diff.Diff) (string, error) {
 		return "", fmt.Errorf("make plain failed: %w", err)
 	}
 
-	res := b.String()
+	res := builder.String()
 
 	return strings.TrimSpace(res), nil
 }

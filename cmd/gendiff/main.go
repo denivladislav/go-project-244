@@ -11,24 +11,20 @@ import (
 	gendiff "code"
 )
 
-var formatFlag = &cli.StringFlag{
-	Name:    "format",
-	Value:   "stylish",
-	Usage:   "output format",
-	Aliases: []string{"f"},
-}
-
-var cmdFlags = []cli.Flag{
-	formatFlag,
-}
-
 var ErrMissingPath = errors.New("two paths are required")
 
 func main() {
 	cmd := &cli.Command{
 		Name:  "gendiff",
 		Usage: "Compares two configuration files and shows the difference",
-		Flags: cmdFlags,
+		Flags: []cli.Flag{
+			&cli.StringFlag{
+				Name:    "format",
+				Value:   "stylish",
+				Usage:   "output format",
+				Aliases: []string{"f"},
+			},
+		},
 		Action: func(ctx context.Context, cmd *cli.Command) error {
 			pathA := cmd.Args().Get(0)
 			pathB := cmd.Args().Get(1)
@@ -40,7 +36,7 @@ func main() {
 			diff, err := gendiff.GenDiff(
 				pathA,
 				pathB,
-				cmd.String(formatFlag.Name),
+				cmd.String("format"),
 			)
 			if err != nil {
 				return fmt.Errorf("gen diff failed: %w", err)

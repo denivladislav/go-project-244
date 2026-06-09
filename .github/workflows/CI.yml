@@ -17,6 +17,7 @@ jobs:
           make build
   lint:
     name: lint
+    needs: build
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
@@ -30,6 +31,7 @@ jobs:
           args: --config=.golangci.yml
   test-coverage:
     name: test and add coverage
+    needs: build
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6

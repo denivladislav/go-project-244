@@ -30,7 +30,7 @@ See [Flags](#flags) and [Demo](#demo) for details.
 
 ### Flags
 ``` bash
--f (--format) #output format; available: stylish (auto-select), plain, json
+-f (--format) #output format; available: stylish (default), plain, json
 ```
 
 ### Development

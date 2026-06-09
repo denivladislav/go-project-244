@@ -11,16 +11,16 @@ import (
 	gendiff "code"
 )
 
-var ErrMissingPath = errors.New("two paths are required")
+var ErrRequiredPaths = errors.New("expected 2 paths")
 
 // Run reads filepaths from CLI, invokes GenDiff and prints the diff.
 func Run(ctx context.Context, cmd *cli.Command) error {
+	if cmd.Args().Len() != 2 {
+		return fmt.Errorf(`%w, got: %d`, ErrRequiredPaths, cmd.Args().Len())
+	}
+
 	pathA := cmd.Args().Get(0)
 	pathB := cmd.Args().Get(1)
-
-	if pathA == "" || pathB == "" {
-		return ErrMissingPath
-	}
 
 	diff, err := gendiff.GenDiff(
 		pathA,
@@ -31,7 +31,7 @@ func Run(ctx context.Context, cmd *cli.Command) error {
 		return fmt.Errorf("gen diff failed: %w", err)
 	}
 
-	fmt.Printf("\n%s\n", diff)
+	fmt.Println(diff)
 
 	return nil
 }
@@ -39,8 +39,9 @@ func Run(ctx context.Context, cmd *cli.Command) error {
 // New returns new configured cli.Command.
 func New() *cli.Command {
 	return &cli.Command{
-		Name:  "gendiff",
-		Usage: "Compares two configuration files and shows the difference",
+		Name:      "gendiff",
+		Usage:     "Compares two configuration files and shows the difference",
+		ArgsUsage: "[pathA] [pathB]",
 		Flags: []cli.Flag{
 			&cli.StringFlag{
 				Name:    "format",

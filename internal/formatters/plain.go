@@ -31,61 +31,60 @@ func stringifyPlain(value any) string {
 	}
 }
 
-func MakePlain(nodes diff.Diff) (string, error) {
-	var builder strings.Builder
+func writePlainNodes(pBuilder *strings.Builder, nodes []diff.Node, path string) error {
+	for _, node := range nodes {
+		newPath := makePlainPath(path, node.Key)
 
-	var iter func(nodes diff.Diff, path string) error
+		strValue := stringifyPlain(node.Value)
 
-	iter = func(nodes diff.Diff, path string) error {
-		for _, node := range nodes {
-			newPath := makePlainPath(path, node.Key)
+		switch node.Group {
+		case diff.Deleted:
+			deletedLine := fmt.Sprintf("Property '%s' was removed\n", newPath)
+			pBuilder.WriteString(deletedLine)
 
-			strValue := stringifyPlain(node.Value)
+			continue
+		case diff.Added:
+			addedLine := fmt.Sprintf(
+				"Property '%s' was added with value: %s\n",
+				newPath,
+				strValue,
+			)
+			pBuilder.WriteString(addedLine)
 
-			switch node.Group {
-			case diff.Deleted:
-				deletedLine := fmt.Sprintf("Property '%s' was removed\n", newPath)
-				builder.WriteString(deletedLine)
+			continue
+		case diff.Unmodified:
+			continue
+		case diff.Modified:
+			strPrevValue := stringifyPlain(node.PrevValue)
+			modifiedLine := fmt.Sprintf(
+				"Property '%s' was updated. From %s to %s\n",
+				newPath,
+				strPrevValue,
+				strValue,
+			)
+			pBuilder.WriteString(modifiedLine)
 
-				continue
-			case diff.Added:
-				addedLine := fmt.Sprintf(
-					"Property '%s' was added with value: %s\n",
-					newPath,
-					strValue,
-				)
-				builder.WriteString(addedLine)
-
-				continue
-			case diff.Unmodified:
-				continue
-			case diff.Modified:
-				strPrevValue := stringifyPlain(node.PrevValue)
-				modifiedLine := fmt.Sprintf(
-					"Property '%s' was updated. From %s to %s\n",
-					newPath,
-					strPrevValue,
-					strValue,
-				)
-				builder.WriteString(modifiedLine)
-
-				continue
-			case diff.Nested:
-				err := iter(node.Children, newPath)
-				if err != nil {
-					return fmt.Errorf("make plain failed: %w", err)
-				}
-
-				continue
-			default:
-				return diff.UnknownGroupError{Group: node.Group}
+			continue
+		case diff.Nested:
+			err := writePlainNodes(pBuilder, node.Children, newPath)
+			if err != nil {
+				return fmt.Errorf("make plain failed: %w", err)
 			}
-		}
 
-		return nil
+			continue
+		default:
+			return diff.UnknownGroupError{Group: node.Group}
+		}
 	}
 
-	err := iter(nodes, "")
+	return nil
+}
+
+// MakePlain transforms diff nodes to a string with plain format.
+func MakePlain(nodes []diff.Node) (string, error) {
+	var builder strings.Builder
+
+	err := writePlainNodes(&builder, nodes, "")
 	if err != nil {
 		return "", fmt.Errorf("make plain failed: %w", err)
 	}

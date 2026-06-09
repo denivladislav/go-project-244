@@ -1,3 +1,17 @@
+/*
+Gendiff compares two configuration files and shows the difference.
+
+Without explicit format default "stylish" format is used.
+
+Usage:
+
+	bin/gendiff [pathA] [pathB] [flags]
+
+Flags:
+
+  - f
+    Specific output format ("stylish", "plain", etc.)
+*/
 package main
 
 import (

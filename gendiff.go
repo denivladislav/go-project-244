@@ -1,3 +1,5 @@
+// Package code provides GenDiff function.
+// GenDiff outputs the diff between two configuration files.
 package code
 
 import (
@@ -10,6 +12,7 @@ import (
 	"code/internal/parsers"
 )
 
+// GenDiff reads two filepaths, computes the diff between them and outputs as formatted string.
 func GenDiff(pathA, pathB, formatName string) (string, error) {
 	bytesA, err := os.ReadFile(pathA)
 	if err != nil {

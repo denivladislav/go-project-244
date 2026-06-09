@@ -62,103 +62,102 @@ type LineOptions struct {
 	depth              int
 }
 
-func MakeStylish(nodes diff.Diff) (string, error) {
+func writeStylishNodes(pBuilder *strings.Builder, nodes []diff.Node, depth int) error {
+	for _, node := range nodes {
+		strValue := stringifyStylish(node.Value, depth+1)
+
+		switch node.Group {
+		case diff.Deleted:
+			deletedLine := makeStylishLine(
+				LineOptions{
+					key:    node.Key,
+					value:  strValue,
+					marker: "-",
+					depth:  depth,
+				},
+			)
+			pBuilder.WriteString(deletedLine)
+
+			continue
+		case diff.Added:
+			addedLine := makeStylishLine(
+				LineOptions{
+					key:    node.Key,
+					value:  strValue,
+					marker: "+",
+					depth:  depth,
+				},
+			)
+			pBuilder.WriteString(addedLine)
+
+			continue
+		case diff.Unmodified:
+			unmodifiedLine := makeStylishLine(
+				LineOptions{
+					key:    node.Key,
+					value:  strValue,
+					marker: " ",
+					depth:  depth,
+				},
+			)
+			pBuilder.WriteString(unmodifiedLine)
+
+			continue
+		case diff.Modified:
+			strPrevValue := stringifyStylish(node.PrevValue, depth+1)
+			deletedLine := makeStylishLine(
+				LineOptions{
+					key:    node.Key,
+					value:  strPrevValue,
+					marker: "-",
+					depth:  depth,
+				},
+			)
+			pBuilder.WriteString(deletedLine)
+
+			addedLine := makeStylishLine(
+				LineOptions{
+					key:    node.Key,
+					value:  strValue,
+					marker: "+",
+					depth:  depth,
+				},
+			)
+			pBuilder.WriteString(addedLine)
+
+			continue
+		case diff.Nested:
+			keyLine := makeStylishLine(LineOptions{
+				key:    node.Key,
+				value:  "{",
+				marker: " ",
+				depth:  depth,
+			})
+			pBuilder.WriteString(keyLine)
+
+			err := writeStylishNodes(pBuilder, node.Children, depth+1)
+			if err != nil {
+				return fmt.Errorf("make stylish failed: %w", err)
+			}
+
+			bracketIndent := makeStylishIndent(depth, 0)
+			fmt.Fprintf(pBuilder, "%s}\n", bracketIndent)
+
+			continue
+		default:
+			return diff.UnknownGroupError{Group: node.Group}
+		}
+	}
+
+	return nil
+}
+
+// MakeStylish transforms diff nodes to a string with stylish format.
+func MakeStylish(nodes []diff.Node) (string, error) {
 	var builder strings.Builder
 	builder.WriteString("{\n")
 
-	var iter func(nodes diff.Diff, depth int) error
-
-	iter = func(nodes diff.Diff, depth int) error {
-		for _, node := range nodes {
-			strValue := stringifyStylish(node.Value, depth+1)
-
-			switch node.Group {
-			case diff.Deleted:
-				deletedLine := makeStylishLine(
-					LineOptions{
-						key:    node.Key,
-						value:  strValue,
-						marker: "-",
-						depth:  depth,
-					},
-				)
-				builder.WriteString(deletedLine)
-
-				continue
-			case diff.Added:
-				addedLine := makeStylishLine(
-					LineOptions{
-						key:    node.Key,
-						value:  strValue,
-						marker: "+",
-						depth:  depth,
-					},
-				)
-				builder.WriteString(addedLine)
-
-				continue
-			case diff.Unmodified:
-				unmodifiedLine := makeStylishLine(
-					LineOptions{
-						key:    node.Key,
-						value:  strValue,
-						marker: " ",
-						depth:  depth,
-					},
-				)
-				builder.WriteString(unmodifiedLine)
-
-				continue
-			case diff.Modified:
-				strPrevValue := stringifyStylish(node.PrevValue, depth+1)
-				deletedLine := makeStylishLine(
-					LineOptions{
-						key:    node.Key,
-						value:  strPrevValue,
-						marker: "-",
-						depth:  depth,
-					},
-				)
-				builder.WriteString(deletedLine)
-
-				addedLine := makeStylishLine(
-					LineOptions{
-						key:    node.Key,
-						value:  strValue,
-						marker: "+",
-						depth:  depth,
-					},
-				)
-				builder.WriteString(addedLine)
-
-				continue
-			case diff.Nested:
-				keyLine := makeStylishLine(LineOptions{
-					key:    node.Key,
-					value:  "{",
-					marker: " ",
-					depth:  depth,
-				})
-				builder.WriteString(keyLine)
-
-				err := iter(node.Children, depth+1)
-				if err != nil {
-					return fmt.Errorf("make stylish failed: %w", err)
-				}
-
-				bracketIndent := makeStylishIndent(depth, 0)
-				fmt.Fprintf(&builder, "%s}\n", bracketIndent)
-
-				continue
-			default:
-				return diff.UnknownGroupError{Group: node.Group}
-			}
-		}
-
-		return nil
-	}
-
-	err := iter(nodes, 1)
+	err := writeStylishNodes(&builder, nodes, 1)
 	if err != nil {
 		return "", fmt.Errorf("make stylish failed: %w", err)
 	}

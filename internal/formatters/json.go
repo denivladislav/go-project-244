@@ -8,11 +8,12 @@ import (
 )
 
 type Root struct {
-	Key      string    `json:"key"`
-	Children diff.Diff `json:"children"`
+	Key      string      `json:"key"`
+	Children []diff.Node `json:"children"`
 }
 
-func MakeJSON(nodes diff.Diff) (string, error) {
+// MakeJSON transforms diff nodes to a string with JSON format.
+func MakeJSON(nodes []diff.Node) (string, error) {
 	indent := strings.Repeat(" ", 2)
 
 	root := Root{

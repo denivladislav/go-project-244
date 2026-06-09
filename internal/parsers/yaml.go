@@ -2,6 +2,7 @@ package parsers
 
 import "gopkg.in/yaml.v3"
 
+// ParseYAML parses YAML-encoded data to key-value map.
 func ParseYAML(data []byte) (map[string]any, error) {
 	var parsedContent map[string]any
 

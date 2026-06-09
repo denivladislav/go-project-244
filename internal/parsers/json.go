@@ -2,6 +2,7 @@ package parsers
 
 import "encoding/json"
 
+// ParseJSON parses JSON-encoded data to key-value map.
 func ParseJSON(data []byte) (map[string]any, error) {
 	var parsedContent map[string]any
 

@@ -1,3 +1,4 @@
+// Package diff implements computing diff between two objects.
 package diff
 
 import (
@@ -7,6 +8,7 @@ import (
 	"slices"
 )
 
+// A Group marks whether a Node was added, deleted, modified, etc.
 type Group string
 
 type UnknownGroupError struct {
@@ -25,6 +27,7 @@ const (
 	Nested     Group = "nested"
 )
 
+// A Node contains object key-value modification data.
 type Node struct {
 	Key       string `json:"key"`
 	PrevValue any    `json:"prev_value,omitempty"`
@@ -32,8 +35,6 @@ type Node struct {
 	Group     Group  `json:"group"`
 	Children  []Node `json:"children,omitempty"`
 }
-
-type Diff = []Node
 
 func getSortedKeys(objA, objB map[string]any) []string {
 	set := make(map[string]struct{}, len(objA)+len(objB))
@@ -51,7 +52,10 @@ func getSortedKeys(objA, objB map[string]any) []string {
 	return slices.Sorted(keys)
 }
 
-func Build(objA, objB map[string]any) Diff {
+// Build returns a diff between two objects.
+// The diff is represented by a slice of Nodes.
+// Each Node contains object key-value modification data.
+func Build(objA, objB map[string]any) []Node {
 	sortedKeys := getSortedKeys(objA, objB)
 	nodes := make([]Node, len(sortedKeys))
 

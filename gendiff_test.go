@@ -73,7 +73,11 @@ func TestGenDiff_Errors(t *testing.T) {
 	}
 
 	for name, tt := range tests {
+		tt := tt
+
 		t.Run(name, func(t *testing.T) {
+			t.Parallel()
+
 			_, err := GenDiff(tt.pathA, tt.pathB, tt.formatName)
 
 			validateError(t, err, tt.checkErr)
@@ -112,7 +116,11 @@ func TestGenDiff(t *testing.T) {
 	}
 
 	for name, tt := range tests {
+		tt := tt
+
 		t.Run(name, func(t *testing.T) {
+			t.Parallel()
+
 			bytesWant, err := os.ReadFile(tt.pathWant)
 			require.NoError(t, err)
 

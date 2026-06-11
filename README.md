@@ -27,7 +27,7 @@ See [Flags](#flags) and [Demo](#demo) for details.
 
 ### Flags
 ``` bash
--f (--format) #output format; available: stylish (default), plain, json
+-f (--format) #output format (available: "stylish", "plain", "json") (default: "stylish")
 ```
 
 ### Development

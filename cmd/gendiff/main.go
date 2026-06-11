@@ -23,7 +23,9 @@ import (
 )
 
 func main() {
-	if err := app.New().Run(context.Background(), os.Args); err != nil {
+	newApp := app.New()
+
+	if err := newApp.Run(context.Background(), os.Args); err != nil {
 		fmt.Fprintln(os.Stderr, err)
 		os.Exit(1)
 	}

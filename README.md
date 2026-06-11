@@ -6,9 +6,6 @@ CLI-utility that outputs the diff between two data objects.
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=denivladislav_go-project-244&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=denivladislav_go-project-244)
 [![Coverage](https://sonarcloud.io/api/project_badges/measure?project=denivladislav_go-project-244&metric=coverage)](https://sonarcloud.io/summary/new_code?id=denivladislav_go-project-244)
 
-### Requirements
-Go 1.26+
-
 ## Supported file formats
 - JSON
 - YAML, YML
@@ -30,7 +27,7 @@ See [Flags](#flags) and [Demo](#demo) for details.
 
 ### Flags
 ``` bash
--f (--format) #output format; available: stylish (default), plain, json
+-f (--format) #output format (available: "stylish", "plain", "json") (default: "stylish")
 ```
 
 ### Development

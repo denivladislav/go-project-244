@@ -14,7 +14,7 @@ import (
 var ErrRequiredPaths = errors.New("expected 2 paths")
 
 // Run reads filepaths from CLI, invokes GenDiff and prints the diff.
-func Run(ctx context.Context, cmd *cli.Command) error {
+func Run(_ context.Context, cmd *cli.Command) error {
 	if cmd.Args().Len() != 2 {
 		return fmt.Errorf(`%w, got: %d`, ErrRequiredPaths, cmd.Args().Len())
 	}
@@ -46,7 +46,7 @@ func New() *cli.Command {
 			&cli.StringFlag{
 				Name:    "format",
 				Value:   "stylish",
-				Usage:   "output format",
+				Usage:   "output format (available: stylish, plain, json)",
 				Aliases: []string{"f"},
 			},
 		},

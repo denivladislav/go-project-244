@@ -54,30 +54,32 @@ func Build(objA, objB map[string]any) []Node {
 	nodes := make([]Node, len(sortedKeys))
 
 	for i, key := range sortedKeys {
-		if _, ok := objA[key]; !ok {
-			nodes[i] = Node{Key: key, Value: objB[key], Group: Added}
-			continue
-		}
-
-		if _, ok := objB[key]; !ok {
-			nodes[i] = Node{Key: key, Value: objA[key], Group: Deleted}
-			continue
-		}
+		_, existsValueA := objA[key]
+		_, existsValueB := objB[key]
 
 		childA, isObjChildA := objA[key].(map[string]any)
 		childB, isObjChildB := objB[key].(map[string]any)
 
-		if isObjChildA && isObjChildB {
+		switch {
+		case !existsValueA:
+			nodes[i] = Node{Key: key, Value: objB[key], Group: Added}
+			continue
+
+		case !existsValueB:
+			nodes[i] = Node{Key: key, Value: objA[key], Group: Deleted}
+			continue
+
+		case isObjChildA && isObjChildB:
 			nodes[i] = Node{Key: key, Children: Build(childA, childB), Group: Nested}
 			continue
-		}
 
-		if !reflect.DeepEqual(objA[key], objB[key]) {
+		case !reflect.DeepEqual(objA[key], objB[key]):
 			nodes[i] = Node{Key: key, PrevValue: objA[key], Value: objB[key], Group: Modified}
 			continue
-		}
 
-		nodes[i] = Node{Key: key, Value: objA[key], Group: Unmodified}
+		default:
+			nodes[i] = Node{Key: key, Value: objA[key], Group: Unmodified}
+		}
 	}
 
 	return nodes

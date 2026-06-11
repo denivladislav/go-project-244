@@ -20,6 +20,12 @@ linters:
     - unparam
     - goconst
     - wsl_v5
+    - revive
+  settings:
+    revive:
+      rules:
+        - name: unused-parameter
+          disabled: false
 formatters:
   enable:
     - goimports
